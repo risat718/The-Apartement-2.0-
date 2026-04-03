@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Apartment - Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://app.sandbox.midtrans.com/sdk/js/v1/midtrans-snap.js"></script>
+    <style>
+        /* [SEBELUMNYA SAMA, TAPI TAMBAH E-COMMERCE STYLES] */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: auto !important; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #ffffff; line-height: 1.6; }
+
+        /* [NAVBAR & HERO SAMA seperti sebelumnya - skip untuk singkat] */
+        
+        /* CART & CHECKOUT STYLES */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-modal {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .cart-total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 1.5rem 0;
+            color: #ffffff;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .close-cart {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .close-cart:hover {
+            color: #fff;
+        }
+
+        /* Product sold out */
+        .sold-out {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .sold-out .add-to-cart {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        /* Success modal */
+        .success-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 3000;
+            display: none;
+            border: 1px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <!-- [NAVBAR SAMA seperti sebelumnya] -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a class="logo" onclick="showSection('home')">The <span>Apartment</span></a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a class="nav-link active" onclick="showSection('home')">Home</a></li>
+                <li><a class="nav-link" onclick="showSection('about')">About</a></li>
+                <li><a class="nav-link" onclick="showSection('info')">Info</a></li>
+                <li><a class="nav-link" onclick="showSection('marketplace')">Marketplace</a></li>
+                <li><a class="nav-link" id="cartIcon" onclick="toggleCart()" style="position: relative;">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cartCount" style="position: absolute;top: -8px;right: -8px;background:#4CAF50;color:white;border-radius:50%;width:20px;height:20px;font-size:0.8rem;display:flex;align-items:center;justify-content:center;">0</span>
+                </a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- [MAIN CONTENT SAMA] -->
+    <div class="main-content">
+        <!-- [Hero, About, Info sections sama] -->
+
+        <!-- MARKETPLACE - REAL PRODUCTS -->
+        <section id="marketplace" class="section">
+            <h2 class="section-title">Marketplace</h2>
+            <div class="marketplace-grid">
+                <!-- Product 1 -->
+                <div class="product-card" data-id="1" data-name="Logo Tee Black" data-price="250000">
+                    <div class="product-image"><i class="fas fa-tshirt"></i></div>
+                    <div class="product-info">
+                        <div class="product-title">Logo Tee Black</div>
+                        <div class="product-price">Rp 250.000</div>
+                        <button class="add-to-cart" onclick="addToCart(1)">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card" data-id="2" data-name="Hoodie Winter Edition" data-price="450000">
+                    <div class="product-image"><i class="fas fa-hoodie"></i></div>
+                    <div class="product-info">
+                        <div class="product-title">Hoodie Winter Edition</div>
+                        <div class="product-price">Rp 450.000</div>
+                        <button class="add-to-cart" onclick="addToCart(2)">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card sold-out" data-id="3" data-name="Vinyl City Lights" data-price="350000">
+                    <div class="product-image"><i class="fas fa-compact-disc"></i></div>
+                    <div class="product-info">
+                        <div class="product-title">Vinyl City Lights</div>
+                        <div class="product-price">Rp 350.000</div>
+                        <button class="add-to-cart">SOLD OUT</button>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card" data-id="4" data-name="Dad Hat Classic" data-price="175000">
+                    <div class="product-image"><i class="fas fa-hat-wizard"></i></div>
+                    <div class="product-info">
+                        <div class="product-title">Dad Hat Classic</div>
+                        <div class="product-price">Rp 175.000</div>
+                        <button class="add-to-cart" onclick="addToCart(4)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- CART MODAL -->
+    <div id="cartOverlay" class="cart-overlay">
+        <div class="cart-modal">
+            <div class="close-cart" onclick="toggleCart()">&times;</div>
+            <h3><i class="fas fa-shopping-cart"></i> Shopping Cart</h3>
+            <div id="cartItems"></div>
+            <div class="cart-total" id="cartTotal">Total: Rp 0</div>
+            <button class="checkout-btn" id="checkoutBtn" onclick="checkout()" disabled>Checkout (Rp 0)</button>
+        </div>
+    </div>
+
+    <!-- SUCCESS MODAL -->
+    <div id="successModal" class="success-modal">
+        <i class="fas fa-check-circle" style="font-size:3rem;color:#4CAF50;"></i>
+        <h3>Payment Success!</h3>
+        <p>Terima kasih telah berbelanja di The Apartment!</p>
+        <button onclick="closeSuccess()" class="cta-button" style="margin-top:1rem;">Continue Shopping</button>
+    </div>
+
+    <!-- [SCRIPTS E-COMMERCE] -->
+    <script>
+        // Global cart
+        let cart = JSON.parse(localStorage.getItem('theApartmentCart')) || [];
+
+        // Update cart count
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        // Add to cart
+        function addToCart(productId) {
+            const product = document.querySelector(`[data-id="${productId}"]`);
+            const productName = product.dataset.name;
+            const productPrice = parseInt(product.dataset.price);
+
+            const existingItem = cart.find(item => item.id == productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ id: productId, name: productName, price: productPrice, quantity: 1 });
+            }
+
+            localStorage.setItem('theApartmentCart', JSON.stringify(cart));
+            updateCartCount();
+            
+            // Feedback
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Added!';
+            btn.style.background = '#4CAF50';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '#ffffff';
+            }, 1500);
+        }
+
+        // Toggle cart
+        function toggleCart() {
+            const overlay = document.getElementById('cartOverlay');
+            overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex';
+            if (overlay.style.display === 'flex') renderCart();
+        }
+
+        // Render cart
+        function renderCart() {
+            const cartItems = document.getElementById('cartItems');
+            const totalEl = document.getElementById('cartTotal');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="text-align:center;color:#ccc;">Cart is empty</p>';
+                totalEl.textContent = 'Total: Rp 0';
+                checkoutBtn.disabled = true;
+                checkoutBtn.textContent = 'Checkout (Rp 0)';
+                return;
+            }
+
+            let total = 0;
+            cartItems.innerHTML = cart.map(item => {
+                total += item.price * item.quantity;
+                return `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <small>Rp ${item.price.toLocaleString()} x ${item.quantity}</small>
+                        </div>
+                        <div>
+                            <button onclick="removeFromCart(${item.id})" style="background:none;border:1px solid #ccc;color:#ccc;padding:0.3rem 0.6rem;border-radius:5px;cursor:pointer;">Remove</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            totalEl.textContent = `Total: Rp ${total.toLocaleString()}`;
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = `Checkout (Rp ${total.toLocaleString()})`;
+        }
+
+        // Remove from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id != productId);
+            localStorage.setItem('theApartmentCart', JSON.stringify(cart));
+            updateCartCount();
+            renderCart();
+        }
+
+        // MIDTRANS CHECKOUT
+        function checkout() {
+            if (cart.length === 0) return;
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            // Midtrans Snap configuration (SANDBOX - ganti ke PRODUCTION nanti)
+            const orderData = {
+                transaction_details: {
+                    order_id: 'TA-' + Date.now(),
+                    gross_amount: total
+                },
+                customer_details: {
+                    first_name: "Customer",
+                    email: "customer@example.com"
+                },
+                item_details: cart.map(item => ({
+                    id: item.id,
+                    price: item.price,
+                    name: item.name,
+                    quantity: item.quantity
+                }))
+            };
+
+            snap.pay(orderData, {
+                onSuccess: function(result) {
+                    console.log('Payment success!', result);
+                    cart = []; // Clear cart
+                    localStorage.removeItem('theApartmentCart');
+                    updateCartCount();
+                    showSuccess();
+                },
+                onPending: function(result) {
+                    console.log('Payment pending', result);
+                    alert('Payment sedang diproses. Cek email Anda!');
+                },
+                onError: function(result) {
+                    console.log('Payment error', result);
+                    alert('Payment gagal. Silakan coba lagi!');
+                }
+            });
+        }
+
+        // Success modal
+        function showSuccess() {
+            document.getElementById('successModal').style.display = 'block';
+            document.getElementById('cartOverlay').style.display = 'none';
+        }
+
+        function closeSuccess() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+
+        // Close modals on outside click
+        document.getElementById('cartOverlay').addEventListener('click', function(e) {
+            if (e.target === this) toggleCart();
+        });
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            // [showSection function sama seperti sebelumnya]
+        });
+
+        // Midtrans Snap init (ganti dengan Merchant ID Anda)
+        var snap = new MidtransSnap({
+            key: 'SB-Mid-server-xxxxxx', // Ganti dengan Midtrans Merchant Key SANDBOX
+            handler: function() {},
+            closed: function() {}
+        });
+    </script>
+</body>
+</html>

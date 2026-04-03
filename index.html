@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Apartment - Official Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://app.sandbox.midtrans.com/sdk/js/v1/midtrans-snap.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: auto !important; /* MATIIN smooth scroll global */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Navigation - FIXED AT TOP */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            position: relative;
+            z-index: 1001;
+            cursor: pointer;
+        }
+
+        .logo span {
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: #cccccc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link.active {
+            color: #ffffff;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #ffffff;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #ffffff;
+            transition: 0.3s;
+        }
+
+        /* MAIN CONTAINER - INI YANG BIKIN KE ATAS! */
+        .main-content {
+            margin-top: 70px; /* Tinggi navbar */
+            min-height: 100vh;
+        }
+
+        /* Hero Section - MULAI DARI ATAS! */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%230a0a0a" width="1200" height="800"/><circle fill="%23111111" opacity="0.3" cx="200" cy="200" r="100"/><circle fill="%23111111" opacity="0.2" cx="1000" cy="600" r="150"/><rect fill="%23111111" opacity="0.1" x="800" y="100" width="200" height="100"/></svg>');
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 0 2rem;
+            padding-top: 80px;
+            padding-bottom: 80px;
+            display: none; /* HIDDEN BY DEFAULT */
+        }
+
+        .hero.active {
+            display: flex !important;
+        }
+
+        .hero-content {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(1rem, 7vw, 7rem);
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            color: #cccccc;
+            margin: 0;
+            max-width: 600px;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            background: #ffffff;
+            color: #000000;
+            padding: 1.3rem 3.5rem;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            box-shadow: 0 15px 40px rgba(255,255,255,0.2);
+            width: fit-content;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 60px rgba(255,255,255,0.35);
+        }
+
+        /* Sections - FULL HEIGHT & START FROM TOP */
+        .section {
+            min-height: 100vh;
+            padding: 120px 2rem 100px;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .section.active {
+            display: block !important;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 4rem;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* About */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            color: #cccccc;
+            line-height: 1.8;
+        }
+
+        .about-image {
+            height: 400px;
+            background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Info */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .info-icon {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .info-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        /* Marketplace */
+        .marketplace-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: #1a1a1a;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid #333;
+        }
+
+        .product-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .product-image {
+            height: 250px;
+            background: linear-gradient(45deg, #2a2a2a, #333);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            background: #ffffff;
+            color: #000;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: #111;
+            padding: 3rem 2rem 1rem;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: #2a2a2a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: #ffffff;
+            color: #000;
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: rgba(10,10,10,0.98);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                padding: 2rem 0;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 100px 1rem 80px;
+            }
+        }
+
+
+           /* [SEBELUMNYA SAMA, TAPI TAMBAH E-COMMERCE STYLES] */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: auto !important; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #ffffff; line-height: 1.6; }
+
+                
+        /* CART & CHECKOUT STYLES */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-modal {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .cart-total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 1.5rem 0;
+            color: #ffffff;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .close-cart {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .close-cart:hover {
+            color: #fff;
+        }
+
+        /* Product sold out */
+        .sold-out {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .sold-out .add-to-cart {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        /* Success modal */
+        .success-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 3000;
+            display: none;
+            border: 1px solid #4CAF50;
+        }
+
+        /* ✅ ABOUT IMAGE - CUSTOM BACKGROUND */
+.about-image {
+    height: 400px;
+    background: linear-gradient(45deg, #1a1a1a, #2a2a2a),
+                var(--bg-image, linear-gradient(45deg, #2a2a2a, #333));
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.about-image:hover {
+    transform: scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.about-image::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+    pointer-events: none;
+}
+
+/* Overlay untuk text readability jika ada gambar */
+.about-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.4);
+    border-radius: 20px;
+    pointer-events: none;
+}
+
+
+
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container"> 
+            <img src="theapartementlogo.jpeg" alt="The Apartment Logo" style="width:40px;height:auto;margin-right: 10px;cursor:pointer;" onclick="showSection('home')">
+            <a class="logo" onclick="showSection('home')">The <span>Apartment</span></a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a class="nav-link active" onclick="showSection('home')">Home</a></li>
+                <li><a class="nav-link" onclick="showSection('about')">About</a></li>
+                <li><a class="nav-link" onclick="showSection('info')">Info</a></li>
+                <li><a class="nav-link" onclick="showSection('marketplace')">Marketplace</a></li>
+                <li><a class="nav-link" id="cartIcon" onclick="toggleCart()" style="position: relative;">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cartCount" style="position: absolute;top: -8px;right: -8px;background:#4CAF50;color:white;border-radius:50%;width:20px;height:20px;font-size:0.8rem;display:flex;align-items:center;justify-content:center;">0</span>
+                </a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT - INI YANG BIKIN MULAI DARI ATAS! -->
+    <div class="main-content">
+        <!-- Hero Section - SHOW BY DEFAULT -->
+        <section id="home" class="hero active">
+            <div class="hero-content">
+                <img src="theapartementlogo.jpeg" alt="The Apartment Logo" style="width:150px;height:auto;margin-bottom: -1%;">
+                <h1>The Apartment</h1>
+                <p>Welcome to The Apartement website!!!</p>
+                <h5>disini kalian akan menemukan berbagai merchandise eksklusif dari band kami dan event-event spesial!</h5>
+                <a class="cta-button" onclick="showSection('marketplace')">Shop Merch</a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <h2 class="section-title">About The Apartment</h2>
+            <div class="about-grid">
+                <div class="about-text">
+                    <p>the apartement is a band from indonesia consisting of Vidi (vocal and bass) Risyad (guitarist) Haikal (guitarist) and Qyarr (drummer) the band was built in 2023, 
+                        initially the band was only made for a joke, but Risyad was interested in making a real band, initially the name of the band was “ater de cupp” but Qyarr did not agree with the name because the name looked 
+                        less interesting which in the end the band was named The apartement, the first time the band performed at school alone, and day by day the band often grew, in the year 2023 the end of the band immediately made a song project called I feel hurt, the idea was the guitarist Risyad, he really wanted the apartement band to be a band that was recognized by people,
+                        This recording process is not short, there are so many obstacles that we have passed, such as money problems, permission from parents, time is very tight so that the process of making this song is very long,
+                        which in the end in the middle of 2025 this song was finished and ready to be realized, which in the end the song i feel hurt was realized in the market which made the name of
+                        the band the apartement become crowded anywhere</p>
+                    <br>
+                    <p>Dengan lirik yang jujur dan sound yang autentik, kami ingin menciptakan koneksi emosional dengan setiap pendengar. Setiap lagu adalah cerita, setiap nada adalah perasaan.</p>
+                    </div>
+
+         <!-- ✅ GAMBAR CUSTOM - GANTI INI -->
+        <div class="about-image">
+            <img src="apartement.png" alt="The Apartment" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+    </div>
+        </section>
+
+        <!-- Info Section -->
+        <section id="info" class="section">
+            <h2 class="section-title">Tour & Info</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <i class="fas fa-calendar-alt info-icon"></i>
+                    <h3>Upcoming Shows</h3>
+                    <p><strong>19 Oct 2026</strong> - FesTen (gambir expo)<br>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-microphone info-icon"></i>
+                    <h3>New Album</h3>
+                    <p>"Lorem ipsum" Album will release in 2026!</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-headphones info-icon"></i>
+                    <h3>Listen Now</h3>
+                    <p>"I Feel Hurt", Streaming di semua platform:<br>Spotify | Apple Music | YouTube Music</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-tshirt info-icon"></i>
+                    <h3>Merch Drop</h3>
+                    <p>Coming Soon!!!</p>
+                </div>
+            </div>
+        </section>
+
+          <!-- MARKETPLACE - REAL PRODUCTS -->
+        <section id="marketplace" class="section">
+            <h2 class="section-title">Marketplace</h2>
+            <div class="marketplace-grid">
+                <!-- Product 1 -->
+                <div class="product-card" data-id="1" data-name="Logo Tee Black" data-price="250000">
+                    <div class="product-image"><i class="fas fa-tshirt"></i></div>
+                    <div class="product-info">
+                        <div class="product-title">Logo Tee Black</div>
+                        <div class="product-price">Rp 250.000</div>
+                        <button class="add-to-cart" onclick="addToCart(1)">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card" data-id="2" data-name="Hoodie Winter Edition" data-price="450000">
+                    <div class="product-image"><i class="fas fa-hoodie"></i></div>
+                    <div class="product-info">
+                        <div class="product-title">Hoodie Winter Edition</div>
+                        <div class="product-price">Rp 450.000</div>
+                        <button class="add-to-cart" onclick="addToCart(2)">Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card sold-out" data-id="3" data-name="Vinyl City Lights" data-price="350000">
+                    <div class="product-image"><i class="fas fa-compact-disc"></i></div>
+                    <div class="product-info">
+                        <div class="product-title">Vinyl City Lights</div>
+                        <div class="product-price">Rp 350.000</div>
+                        <button class="add-to-cart">SOLD OUT</button>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card" data-id="4" data-name="Dad Hat Classic" data-price="175000">
+                    <div class="product-image"><i class="fas fa-hat-wizard"></i></div>
+                    <div class="product-info">
+                        <div class="product-title">Dad Hat Classic</div>
+                        <div class="product-price">Rp 175.000</div>
+                        <button class="add-to-cart" onclick="addToCart(4)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+      <!-- CART MODAL -->
+    <div id="cartOverlay" class="cart-overlay">
+        <div class="cart-modal">
+            <div class="close-cart" onclick="toggleCart()">&times;</div>
+            <h3><i class="fas fa-shopping-cart"></i> Shopping Cart</h3>
+            <div id="cartItems"></div>
+            <div class="cart-total" id="cartTotal">Total: Rp 0</div>
+            <button class="checkout-btn" id="checkoutBtn" onclick="checkout()" disabled>Checkout (Rp 0)</button>
+        </div>
+    </div>
+
+    <!-- SUCCESS MODAL -->
+    <div id="successModal" class="success-modal">
+        <i class="fas fa-check-circle" style="font-size:3rem;color:#4CAF50;"></i>
+        <h3>Payment Success!</h3>
+        <p>Terima kasih telah berbelanja di The Apartment!</p>
+        <button onclick="closeSuccess()" class="cta-button" style="margin-top:1rem;">Continue Shopping</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="social-links">
+            <a href="https://www.instagram.com/theapartementofficial/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://open.spotify.com/artist/5FpOW32Wx580p0mIBElaXG" class="social-link" target="_blank"><i class="fab fa-spotify"></i></a>
+            <a href="https://www.youtube.com/@theapartementofficial" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.tiktok.com/@the.apartement" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
+            <a href="https://wa.me/6282136677723" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <p>&copy; 2026 The Apartment. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Mobile menu
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // 🔥 PERFECT INSTANT JUMP KE ATAS - 0 PIXEL!
+        function showSection(sectionId) {
+            // Tutup mobile menu
+            navMenu.classList.remove('active');
+            
+            // Update nav active
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            const clickedLink = event?.target.closest('.nav-link');
+            if (clickedLink) clickedLink.classList.add('active');
+
+            // Hide semua section
+            document.querySelectorAll('.hero, .section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show target
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            // FORCED TO TOP - 0 PIXEL!
+            window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: 'instant' // INSTANT bukan smooth
+            });
+        }
+
+        // Cart functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.add-to-cart').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const title = this.parentElement.querySelector('.product-title').textContent;
+                    const price = this.parentElement.querySelector('.product-price').textContent;
+                    
+                    this.textContent = 'Added!';
+                    this.style.background = '#4CAF50';
+                    this.style.color = 'white';
+                    
+                    setTimeout(() => {
+                        this.textContent = 'Add to Cart';
+                        this.style.background = '#ffffff';
+                        this.style.color = '#000';
+                    }, 1500);
+                });
+            });
+
+            // FORCE initial position to top
+            window.scrollTo(0, 0);
+            
+            console.log('✅ LOADED AT TOP POSITION!');
+            console.log('⚡ All menus = INSTANT jump to TOP!');
+        });
+
+        // Navbar effect
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const navbar = document.querySelector('.navbar');
+                    if (window.scrollY > 50) {
+                        navbar.style.background = 'rgba(10, 10, 10, 0.98)';
+                    } else {
+                        navbar.style.background = 'rgba(10, 10, 10, 0.95)';
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        <!-- Ganti bagian script Midtrans & checkout saja -->
+
+    // Global cart
+        let cart = JSON.parse(localStorage.getItem('theApartmentCart')) || [];
+
+        // Update cart count
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        // Add to cart
+        function addToCart(productId) {
+            const product = document.querySelector(`[data-id="${productId}"]`);
+            const productName = product.dataset.name;
+            const productPrice = parseInt(product.dataset.price);
+
+            const existingItem = cart.find(item => item.id == productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ id: productId, name: productName, price: productPrice, quantity: 1 });
+            }
+
+            localStorage.setItem('theApartmentCart', JSON.stringify(cart));
+            updateCartCount();
+            
+            // Feedback
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Added!';
+            btn.style.background = '#4CAF50';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '#ffffff';
+            }, 1500);
+        }
+
+        // Toggle cart
+        function toggleCart() {
+            const overlay = document.getElementById('cartOverlay');
+            overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex';
+            if (overlay.style.display === 'flex') renderCart();
+        }
+
+        // Render cart
+        function renderCart() {
+            const cartItems = document.getElementById('cartItems');
+            const totalEl = document.getElementById('cartTotal');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="text-align:center;color:#ccc;">Cart is empty</p>';
+                totalEl.textContent = 'Total: Rp 0';
+                checkoutBtn.disabled = true;
+                checkoutBtn.textContent = 'Checkout (Rp 0)';
+                return;
+            }
+
+            let total = 0;
+            cartItems.innerHTML = cart.map(item => {
+                total += item.price * item.quantity;
+                return `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <small>Rp ${item.price.toLocaleString()} x ${item.quantity}</small>
+                        </div>
+                        <div>
+                            <button onclick="removeFromCart(${item.id})" style="background:none;border:1px solid #ccc;color:#ccc;padding:0.3rem 0.6rem;border-radius:5px;cursor:pointer;">Remove</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            totalEl.textContent = `Total: Rp ${total.toLocaleString()}`;
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = `Checkout (Rp ${total.toLocaleString()})`;
+        }
+        
+        // Remove from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id != productId);
+            localStorage.setItem('theApartmentCart', JSON.stringify(cart));
+            updateCartCount();
+            renderCart();
+        }
+
+        // MIDTRANS CHECKOUT
+        function checkout() {
+            if (cart.length === 0) return;
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            // Midtrans Snap configuration (SANDBOX - ganti ke PRODUCTION nanti)
+            const orderData = {
+                transaction_details: {
+                    order_id: 'TA-' + Date.now(),
+                    gross_amount: total
+                },
+                customer_details: {
+                    first_name: "Customer",
+                    email: "customer@example.com"
+                },
+                item_details: cart.map(item => ({
+                    id: item.id,
+                    price: item.price,
+                    name: item.name,
+                    quantity: item.quantity
+                }))
+            };
+
+            snap.pay(orderData, {
+                onSuccess: function(result) {
+                    console.log('Payment success!', result);
+                    cart = []; // Clear cart
+                    localStorage.removeItem('theApartmentCart');
+                    updateCartCount();
+                    showSuccess();
+                },
+                onPending: function(result) {
+                    console.log('Payment pending', result);
+                    alert('Payment sedang diproses. Cek email Anda!');
+                },
+                onError: function(result) {
+                    console.log('Payment error', result);
+                    alert('Payment gagal. Silakan coba lagi!');
+                }
+            });
+        }
+
+        // Success modal
+        function showSuccess() {
+            document.getElementById('successModal').style.display = 'block';
+            document.getElementById('cartOverlay').style.display = 'none';
+        }
+
+        function closeSuccess() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+
+        // Close modals on outside click
+        document.getElementById('cartOverlay').addEventListener('click', function(e) {
+            if (e.target === this) toggleCart();
+        });
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            // [showSection function sama seperti sebelumnya]
+        });
+
+        // Midtrans Snap init (ganti dengan Merchant ID Anda)
+        var snap = new MidtransSnap({
+            key: 'SB-Mid-server-xxxxxx', // Ganti dengan Midtrans Merchant Key SANDBOX
+            handler: function() {},
+            closed: function() {}
+        });
+
+</script>
+</body>
+</html>
